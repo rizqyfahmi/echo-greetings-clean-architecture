@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/rizqyfahmi/gin-greetings-clean-architecture/config"
 	"github.com/rizqyfahmi/gin-greetings-clean-architecture/constant"
+	"github.com/rizqyfahmi/gin-greetings-clean-architecture/routes"
 	"github.com/sirupsen/logrus"
 
 	CustomErrorPackage "github.com/rizqyfahmi/gin-greetings-clean-architecture/pkg/custom_error"
@@ -29,11 +30,10 @@ func main() {
 
 	port := config.GetConfig().App.Port
 	engine := gin.New()
-	engine.GET("/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, "Hello World")
-	})
+	routes := routes.NewRoutes(engine)
+	routes.Run()
 
-	if err := http.ListenAndServe(":"+port, engine); err != nil {
+	if err := http.ListenAndServe(":"+port, routes.GetEngine()); err != nil {
 		err = CustomErrorPackage.NewCustomError(
 			constant.ErrServe,
 			err,
