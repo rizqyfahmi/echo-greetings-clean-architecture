@@ -6,10 +6,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/rizqyfahmi/gin-greetings-clean-architecture/config"
 	"github.com/rizqyfahmi/gin-greetings-clean-architecture/constant"
-	middlewares "github.com/rizqyfahmi/gin-greetings-clean-architecture/middlewares/timeout_limiter"
 	"github.com/rizqyfahmi/gin-greetings-clean-architecture/routes"
 	"github.com/sirupsen/logrus"
 
+	middlewares "github.com/rizqyfahmi/gin-greetings-clean-architecture/middlewares/timeout_limitter"
 	CustomErrorPackage "github.com/rizqyfahmi/gin-greetings-clean-architecture/pkg/custom_error"
 	LoggerPackage "github.com/rizqyfahmi/gin-greetings-clean-architecture/pkg/logger"
 )

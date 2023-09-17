@@ -9,7 +9,8 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"github.com/rizqyfahmi/gin-greetings-clean-architecture/constant"
-	middlewares "github.com/rizqyfahmi/gin-greetings-clean-architecture/middlewares/timeout_limiter"
+
+	middlewares "github.com/rizqyfahmi/gin-greetings-clean-architecture/middlewares/timeout_limitter"
 	CustomErrorPackage "github.com/rizqyfahmi/gin-greetings-clean-architecture/pkg/custom_error"
 	LoggerPackage "github.com/rizqyfahmi/gin-greetings-clean-architecture/pkg/logger"
 )
