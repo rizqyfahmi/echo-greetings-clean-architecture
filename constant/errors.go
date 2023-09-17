@@ -8,4 +8,5 @@ var (
 	ErrConfigPath        = errors.New("Failed to get directory of env file")
 	ErrServe             = errors.New("Failed to serve")
 	ErrRoutes            = errors.New("Failed to run routes")
+	ErrRequestTimeout    = errors.New("Your request has been timeout")
 )

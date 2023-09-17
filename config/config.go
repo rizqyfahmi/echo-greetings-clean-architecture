@@ -5,7 +5,8 @@ import (
 	"os"
 
 	"github.com/ilyakaznacheev/cleanenv"
-	"github.com/rizqyfahmi/gin-greetings-clean-architecture/constant"
+
+	Constant "github.com/rizqyfahmi/gin-greetings-clean-architecture/constant"
 	CustomErrorPackage "github.com/rizqyfahmi/gin-greetings-clean-architecture/pkg/custom_error"
 )
 
@@ -14,7 +15,8 @@ type Environment struct {
 }
 
 type AppEnvironment struct {
-	Port string `env-required:"true" env:"PORT"`
+	Port           string `env-required:"true" env:"PORT"`
+	RequestTimeout int    `env-required:"true" env:"REQUEST_TIMEOUT"`
 }
 
 type Config interface {
@@ -35,7 +37,7 @@ func (c *ConfigImpl) Setup() error {
 	directory, err := os.Getwd()
 	if err != nil {
 		return CustomErrorPackage.NewCustomError(
-			constant.ErrConfigPath,
+			Constant.ErrConfigPath,
 			err,
 			path,
 		)
@@ -46,7 +48,7 @@ func (c *ConfigImpl) Setup() error {
 	err = cleanenv.ReadConfig(envFile, &environment)
 	if err != nil {
 		return CustomErrorPackage.NewCustomError(
-			constant.ErrConfig,
+			Constant.ErrConfig,
 			err,
 			path,
 		)
