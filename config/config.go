@@ -32,7 +32,7 @@ func NewConfig() Config {
 
 func (c *ConfigImpl) Setup() error {
 	path := "Config:Setup"
-	path, err := os.Getwd()
+	directory, err := os.Getwd()
 	if err != nil {
 		return CustomErrorPackage.NewCustomError(
 			constant.ErrConfigPath,
@@ -42,7 +42,7 @@ func (c *ConfigImpl) Setup() error {
 	}
 
 	var environment Environment
-	envFile := fmt.Sprintf("%s/.env", path)
+	envFile := fmt.Sprintf("%s/.env", directory)
 	err = cleanenv.ReadConfig(envFile, &environment)
 	if err != nil {
 		return CustomErrorPackage.NewCustomError(
