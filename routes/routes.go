@@ -9,7 +9,10 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"github.com/rizqyfahmi/gin-greetings-clean-architecture/constant"
-
+	"github.com/rizqyfahmi/gin-greetings-clean-architecture/internal/greetings/data/repository"
+	"github.com/rizqyfahmi/gin-greetings-clean-architecture/internal/greetings/data/source"
+	handler "github.com/rizqyfahmi/gin-greetings-clean-architecture/internal/greetings/delivery/presenter/http"
+	"github.com/rizqyfahmi/gin-greetings-clean-architecture/internal/greetings/domain/usecase"
 	middlewares "github.com/rizqyfahmi/gin-greetings-clean-architecture/middlewares/timeout_limitter"
 	CustomErrorPackage "github.com/rizqyfahmi/gin-greetings-clean-architecture/pkg/custom_error"
 	LoggerPackage "github.com/rizqyfahmi/gin-greetings-clean-architecture/pkg/logger"
@@ -72,6 +75,7 @@ func (r *RoutesImpl) Index() {
 	})
 
 	r.SetExperimentalRoute()
+	r.SetGreetingsRoute()
 }
 
 func (r *RoutesImpl) SetExperimentalRoute() {
@@ -80,4 +84,14 @@ func (r *RoutesImpl) SetExperimentalRoute() {
 		time.Sleep(8 * time.Second)
 		c.JSON(http.StatusOK, "This is only for experimental timeout purpose")
 	})
+}
+
+func (r *RoutesImpl) SetGreetingsRoute() {
+	source := source.NewHelloRemote()
+	repository := repository.NewHelloRepository(source)
+	usecase := usecase.NewGreetingsUsecase(repository)
+	handler := handler.NewGreetingsHandler(usecase)
+
+	route := r.engine.Group("/v1/greetings")
+	route.GET("/", handler.Index)
 }
