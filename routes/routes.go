@@ -9,24 +9,28 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"github.com/rizqyfahmi/gin-greetings-clean-architecture/constant"
+	middlewares "github.com/rizqyfahmi/gin-greetings-clean-architecture/middlewares/timeout_limiter"
 	CustomErrorPackage "github.com/rizqyfahmi/gin-greetings-clean-architecture/pkg/custom_error"
 	LoggerPackage "github.com/rizqyfahmi/gin-greetings-clean-architecture/pkg/logger"
 )
 
 type Routes interface {
 	GetEngine() *gin.Engine
-	Run()
+	Index()
 }
 
 type RoutesImpl struct {
-	engine *gin.Engine
+	engine          *gin.Engine
+	timeoutLimitter middlewares.TimeoutLimiter
 }
 
 func NewRoutes(
 	engine *gin.Engine,
+	timeoutLimitter middlewares.TimeoutLimiter,
 ) Routes {
 	return &RoutesImpl{
-		engine: engine,
+		engine:          engine,
+		timeoutLimitter: timeoutLimitter,
 	}
 }
 
@@ -34,7 +38,7 @@ func (r *RoutesImpl) GetEngine() *gin.Engine {
 	return r.engine
 }
 
-func (r *RoutesImpl) Run() {
+func (r *RoutesImpl) Index() {
 	path := "Routes:Run"
 	defer func() {
 		if err := recover(); err != nil {
@@ -61,7 +65,18 @@ func (r *RoutesImpl) Run() {
 
 	r.engine.LoadHTMLGlob("templates/*.html")
 
+	r.engine.Use(r.timeoutLimitter.Index())
 	r.engine.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", nil)
+	})
+
+	r.SetExperimentalRoute()
+}
+
+func (r *RoutesImpl) SetExperimentalRoute() {
+	route := r.engine.Group("/v1/experimental")
+	route.GET("/timeout", func(c *gin.Context) {
+		time.Sleep(8 * time.Second)
+		c.JSON(http.StatusOK, "This is only for experimental timeout purpose")
 	})
 }

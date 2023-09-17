@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/rizqyfahmi/gin-greetings-clean-architecture/config"
 	"github.com/rizqyfahmi/gin-greetings-clean-architecture/constant"
+	middlewares "github.com/rizqyfahmi/gin-greetings-clean-architecture/middlewares/timeout_limiter"
 	"github.com/rizqyfahmi/gin-greetings-clean-architecture/routes"
 	"github.com/sirupsen/logrus"
 
@@ -28,10 +29,12 @@ func main() {
 		}).Panic(err.(*CustomErrorPackage.CustomError).GetPlain())
 	}
 
+	timeoutLimiter := middlewares.NewTimeoutLimiter(config.GetConfig())
+
 	port := config.GetConfig().App.Port
 	engine := gin.New()
-	routes := routes.NewRoutes(engine)
-	routes.Run()
+	routes := routes.NewRoutes(engine, timeoutLimiter)
+	routes.Index()
 
 	if err := http.ListenAndServe(":"+port, routes.GetEngine()); err != nil {
 		err = CustomErrorPackage.NewCustomError(
